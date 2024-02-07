@@ -4,15 +4,16 @@ import SignupScreen from './Pages/SignupScreen';
 import LoginScreen from './Pages/LoginScreen';
 import { useSelector } from 'react-redux';
 import { RootState } from './store';
+import APP_ROUTES from './Constant/Routes';
 
 function App() {
   const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginScreen />} />        
-        <Route path="/home" element={isLoggedIn ? <Home/> : <Navigate to="/" /> } />
-        <Route path="/Signup" element={<SignupScreen />} />
+        <Route path="/" element={<LoginScreen />} />
+        <Route path={APP_ROUTES.HOME_PAGE} element={isLoggedIn ? <Home/> : <Navigate to="/" /> } />
+        <Route path={APP_ROUTES.SIGNUP_PAGE} element={<SignupScreen />} />
       </Routes>
     </Router>
   );

@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 import { Alert, InputAdornment } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { AlertStyle, BoxStyle, ButtonStyle, IconButtonStyle, OutlinedInputStyle, TextFieldStyle, TypographyStyle } from '../LoginScreenStyle';
@@ -10,7 +10,7 @@ import { fakeLoginData } from '../Data';
 import uuid from 'react-uuid';
 import validator from 'validator';
 import PasswordValidator from 'password-validator';
-
+import APP_ROUTES from '../Constant/Routes';
 
 const SignupScreen: React.FC = () => {
     const navigate = useNavigate();
@@ -37,7 +37,7 @@ const SignupScreen: React.FC = () => {
     const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
     useEffect(() => {
         if (isLoggedIn) {
-            navigate('/home');
+            navigate(generatePath(APP_ROUTES.HOME_PAGE));
         }
     })
     const [id, setId] = useState("");

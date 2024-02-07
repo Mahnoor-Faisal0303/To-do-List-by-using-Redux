@@ -3,11 +3,12 @@ import { AlertStyle, BoxStyle, ButtonStyle, IconButtonStyle, LinkStyle, Outlined
 import { InputAdornment } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { useNavigate } from 'react-router-dom';
+import { generatePath, useNavigate } from 'react-router-dom';
 import { fakeLoginData } from '../Data'
 import { setCurrentUser } from '../Store/Slices/loginSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../store';
+import APP_ROUTES from '../Constant/Routes';
 
 const LoginScreen: React.FC = () => {
     const dispatch = useDispatch();
@@ -48,15 +49,14 @@ const LoginScreen: React.FC = () => {
     const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
     useEffect(() => {
         if (isLoggedIn) {
-            navigate('/home');
+            navigate(generatePath(APP_ROUTES.HOME_PAGE))
         }
     })
-
     return (
         <Fragment>
             <BoxStyle>
                 <TypographyStyle variant="h3">Login /
-                    <LinkStyle href="#" underline="hover" onClick={() => navigate('/Signup')}>
+                    <LinkStyle href="#" underline="hover" onClick={() => navigate(generatePath(APP_ROUTES.SIGNUP_PAGE))}>
                         {' SignUP'}
                     </LinkStyle>
                 </TypographyStyle>
