@@ -6,7 +6,6 @@ import { generatePath, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
 import { AlertStyle, BoxStyle, ButtonStyle, IconButtonStyle, OutlinedInputStyle, TextFieldStyle, TypographyStyle } from '../LoginScreenStyle';
-import { fakeLoginData } from '../Data';
 import uuid from 'react-uuid';
 import validator from 'validator';
 import PasswordValidator from 'password-validator';
@@ -33,21 +32,19 @@ const SignupScreen: React.FC = () => {
     const PasswordInputRef = React.useRef<HTMLInputElement>(null);
     const ConfirmPasswordInputRef = React.useRef<HTMLInputElement>(null);
 
-
     const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
     useEffect(() => {
         if (isLoggedIn) {
             navigate(generatePath(APP_ROUTES.HOME_PAGE));
         }
     })
-    const [id, setId] = useState("");
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [showAlert, setShowAlert] = useState(false);
     const [showNameAlert, setShowNameAlert] = useState(false);
-    const [showEmailAlert, setShowEmailAlert] = useState(false);
+    const [showEmailError, setShowEmailError] = useState(false);
     const [showCPasswordAlert, setShowCPassowrdAlert] = useState(false);
 
     const passwordSchema = new PasswordValidator();
@@ -60,7 +57,6 @@ const SignupScreen: React.FC = () => {
         .symbols(0)
 
     const onClickLogin = function onClickLoginFunc() {
-        setId == uuid;
         if (!name || !email || !password) {
             setShowNameAlert(true);
             setTimeout(function () {
@@ -70,9 +66,9 @@ const SignupScreen: React.FC = () => {
         }
 
         if (!validator.isEmail(email)) {
-            setShowEmailAlert(true);
+            setShowEmailError(true);
             setTimeout(function () {
-                setShowEmailAlert(false);
+                setShowEmailError(false);
             }, 1000);
             return;
         }
@@ -92,16 +88,32 @@ const SignupScreen: React.FC = () => {
             }, 1000);
             return;
         }
-        if (password === confirmPassword && name && email) {
-            const newUser = { id, email, password };
-            fakeLoginData.push(newUser);
-            navigate('/')
-        }
-        else {
+        if (password !== confirmPassword) {
             setShowAlert(true);
             setTimeout(function () {
                 setShowAlert(false);
             }, 2000);
+        }
+
+        const userInformation = {
+            id: `${uuid()}`,
+            name: `${name}`,
+            email: `${email}`,
+            password: `${password}`,
+        };
+
+        const data = localStorage.getItem("initialData")
+
+        if (!data) {
+            const initialData = [];
+            initialData.push(userInformation);
+            localStorage.setItem('initialData', JSON.stringify(initialData));
+            console.log(initialData);
+        } else {
+            const newData = JSON.parse(data);
+            newData.push(userInformation);
+            localStorage.setItem('initialData', JSON.stringify(newData));
+            console.log(newData);
         }
     }
 
@@ -112,7 +124,7 @@ const SignupScreen: React.FC = () => {
                     Signup Page </TypographyStyle>
                 {showNameAlert && (
                     <Alert>
-                       Must fill all the Information!
+                        Must fill all the Information!
                     </Alert>
                 )}
                 {showAlert && (
@@ -120,11 +132,6 @@ const SignupScreen: React.FC = () => {
                         Password must be at least 8 characters
                         long and contain at least one uppercase letter,
                         one lowercase letter,one symbol, and one number!
-                    </Alert>
-                )}
-                {showEmailAlert && (
-                    <Alert>
-                        Invalid email format!
                     </Alert>
                 )}
                 {showCPasswordAlert && (
@@ -149,6 +156,8 @@ const SignupScreen: React.FC = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     inputRef={EmailInputRef}
                     onKeyPress={(e) => handleKeyPress(e, PasswordInputRef)}
+                    error={showEmailError && !validator.isEmail(email)}
+                    helperText={showEmailError ? 'invalid format' : ''}
                 />
                 <OutlinedInputStyle
                     required
@@ -170,7 +179,7 @@ const SignupScreen: React.FC = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     inputRef={PasswordInputRef}
                     onKeyPress={(e) => handleKeyPress(e, ConfirmPasswordInputRef)}
-
+                    error={showAlert && !passwordSchema.validate(password)}
                 />
                 <OutlinedInputStyle
                     required
@@ -179,7 +188,7 @@ const SignupScreen: React.FC = () => {
                     placeholder='Confirm Password'
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     inputRef={ConfirmPasswordInputRef}
-                    
+
                 />
 
                 <ButtonStyle variant="contained" color="success" onClick={onClickLogin}>

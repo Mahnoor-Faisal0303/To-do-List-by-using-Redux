@@ -11,7 +11,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginScreen />} />
+        <Route path={APP_ROUTES.LOGIN_PAGE} element={<LoginScreen />} />
         <Route path={APP_ROUTES.HOME_PAGE} element={isLoggedIn ? <Home/> : <Navigate to="/" /> } />
         <Route path={APP_ROUTES.SIGNUP_PAGE} element={<SignupScreen />} />
       </Routes>
