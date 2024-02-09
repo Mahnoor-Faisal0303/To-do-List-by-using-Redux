@@ -1,10 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Alert, InputAdornment } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store';
 import { AlertStyle, BoxStyle, ButtonStyle, IconButtonStyle, OutlinedInputStyle, TextFieldStyle, TypographyStyle } from '../LoginScreenStyle';
 import uuid from 'react-uuid';
 import validator from 'validator';
@@ -31,13 +29,6 @@ const SignupScreen: React.FC = () => {
     const EmailInputRef = React.useRef<HTMLInputElement>(null);
     const PasswordInputRef = React.useRef<HTMLInputElement>(null);
     const ConfirmPasswordInputRef = React.useRef<HTMLInputElement>(null);
-
-    const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
-    useEffect(() => {
-        if (isLoggedIn) {
-            navigate(generatePath(APP_ROUTES.HOME_PAGE));
-        }
-    })
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -115,6 +106,7 @@ const SignupScreen: React.FC = () => {
             localStorage.setItem('initialData', JSON.stringify(newData));
             console.log(newData);
         }
+        navigate(generatePath(APP_ROUTES.LOGIN_PAGE));
     }
 
     return (

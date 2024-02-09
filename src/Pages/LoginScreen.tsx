@@ -4,11 +4,10 @@ import { InputAdornment } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { fakeLoginData } from '../Data'
 import { setCurrentUser } from '../Store/Slices/loginSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../store';
+import { useDispatch } from 'react-redux';
 import APP_ROUTES from '../Constant/Routes';
+import uuid from 'react-uuid';
 
 const LoginScreen: React.FC = () => {
     const dispatch = useDispatch();
@@ -33,25 +32,59 @@ const LoginScreen: React.FC = () => {
 
     const passwordInputRef = React.useRef<HTMLInputElement>(null);
 
-    const loginFunction = () => {
-        const user = fakeLoginData.find(userData => userData.email === email);
-        if (user && user.password === password) {
-            dispatch(setCurrentUser(user));
+    useEffect(() => {
+        const loginData = localStorage.getItem("loggedInData");
+        if (loginData) {
+            navigate(generatePath(APP_ROUTES.HOME_PAGE));
+        }
+    },[navigate]);
 
-        } else {
+    const loginFunction = () => {
+        const uservalid = {
+            id: `${uuid()}`,
+            email: `${email}`,
+            password: `${password}`,
+        };
+        const userEnteredEmail = uservalid.email;
+        const userEnteredPassword = uservalid.password;
+        const data = localStorage.getItem("initialData");
+        if (data) {
+            const newData = JSON.parse(data);
+            console.log(newData);
+
+            const isUserValid = newData.find((userData: { password: string; email: string; }
+            ) => userData.email === userEnteredEmail && userData.password === userEnteredPassword);
+
+            if (isUserValid) {
+                localStorage.setItem('loggedInData', JSON.stringify(userEnteredEmail));
+
+                console.log("email and password found");
+                dispatch(setCurrentUser(isUserValid));
+                navigate(generatePath(APP_ROUTES.HOME_PAGE));
+            }
+            else {
+                console.log("not found");
+                setShowAlert(true);
+                setTimeout(function () {
+                    setShowAlert(false);
+                }, 2000);
+            }
+        }
+        else{
             setShowAlert(true);
-            setTimeout(function () {
-                setShowAlert(false);
-            }, 2000);
+                setTimeout(function () {
+                    setShowAlert(false);
+                }, 2000);
         }
     }
 
-    const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
-    useEffect(() => {
-        if (isLoggedIn) {
-            navigate(generatePath(APP_ROUTES.HOME_PAGE))
-        }
-    })
+
+    // const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
+    // useEffect(() => {
+    //     if (isLoggedIn) {
+    //         navigate(generatePath(APP_ROUTES.HOME_PAGE))
+    //     }
+    // })
     return (
         <Fragment>
             <BoxStyle>

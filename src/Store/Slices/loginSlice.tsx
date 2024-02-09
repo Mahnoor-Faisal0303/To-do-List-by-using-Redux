@@ -5,7 +5,7 @@ interface LoginState {
         email: string,
         password: string,
     };
-    isLoggedIn: boolean;
+   // isLoggedIn: boolean;
 }
 
 const loginSlice = createSlice({
@@ -20,8 +20,8 @@ const loginSlice = createSlice({
     reducers: {
         setCurrentUser: (state: LoginState, action: PayloadAction<{ email: string; password: string }>) => {
              state.loginInfo = action.payload;
-             state.isLoggedIn = true;
-             console.log(state);  
+            // state.isLoggedIn = true;
+            // console.log(state);  
         },
     },
 });
