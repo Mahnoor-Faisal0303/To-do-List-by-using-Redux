@@ -14,7 +14,6 @@ const loginSlice = createSlice({
             email: '',
             password: ''
         },
-        isLoggedIn: false,
     },
     reducers: {
         setCurrentUser: (state: LoginState, action: PayloadAction<{ email: string; password: string }>) => {

@@ -1,9 +1,11 @@
 import React, { useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { ButtonStyle, ListStyle, ListItemStyle, TextFieldStyle, DeleteEditButtonStyle } from '../HomeStyle';
+import { ButtonStyle, ListStyle, ListItemStyle, TextFieldStyle, DeleteEditButtonStyle, LogoutButtonStyle } from '../HomeStyle';
 import { addTodo, deleteTodo, editTodo, updateTodo } from '../Store/Slices/todoSlice'
 import { RootState } from '../store';
 import { Alert, ListItemSecondaryAction, ListItemText } from '@mui/material';
+import APP_ROUTES from '../Constant/Routes';
+import { generatePath, useNavigate } from 'react-router-dom';
 
 const TodoListComponent: React.FC = () => {
   const [todoText, setTodoText] = useState('');
@@ -11,6 +13,7 @@ const TodoListComponent: React.FC = () => {
   const [showUpdateButton, setShowUpdateButton] = useState(false);
   const [showAddButton, setShowAddButton] = useState(true);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const todoList = useSelector((state: RootState) => state.todos.todoList);
 
   const handleAddButtonClick = () => {
@@ -50,6 +53,12 @@ const TodoListComponent: React.FC = () => {
     setTodoText('');
   }
 
+  const handleLogoutButtonClick = () => {
+    localStorage.removeItem('loggedInData');
+    navigate(generatePath(APP_ROUTES.LOGIN_PAGE));
+  };
+
+
   return (
     <Fragment>
       <TextFieldStyle
@@ -85,6 +94,10 @@ const TodoListComponent: React.FC = () => {
           </Alert>
         )
       }
+
+      <LogoutButtonStyle onClick={() => handleLogoutButtonClick()}>
+        logout
+      </LogoutButtonStyle>
     </Fragment >
 
   );
