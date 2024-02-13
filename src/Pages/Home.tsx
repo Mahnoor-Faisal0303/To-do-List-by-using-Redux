@@ -46,14 +46,14 @@ const Home: React.FC = () => {
 
         {showUpdateButton && (
           <UpdateButtonTodo
-          todoText={todoText}
-          setShowAlert={setShowAlert}
-          setTodoText={setTodoText}
-          setShowUpdateButton={setShowUpdateButton}
-          setShowAddButton={setShowAddButton}
-          dispatch={dispatch}
-          newId={newId}
-        />
+            todoText={todoText}
+            setShowAlert={setShowAlert}
+            setTodoText={setTodoText}
+            setShowUpdateButton={setShowUpdateButton}
+            setShowAddButton={setShowAddButton}
+            dispatch={dispatch}
+            newId={newId}
+          />
         )}
 
         <TodoList>

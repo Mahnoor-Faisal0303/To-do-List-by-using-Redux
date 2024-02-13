@@ -16,7 +16,6 @@ interface IFormInput {
     password: string
     confirmPassword: string
 }
-
 const SignupScreen: React.FC = () => {
 
     const {
@@ -61,13 +60,13 @@ const SignupScreen: React.FC = () => {
             setError("password", { type: "manual", message: "Invalid password" });
             valid = false;
         }
-        if(password !== confirmPassword){
+        if (password !== confirmPassword) {
             setError("confirmPassword", { type: "manual", message: "password not matched" });
             valid = false;
         }
-        if (!valid) { 
+        if (!valid) {
             return;
-            }
+        }
         const data = localStorage.getItem("initialData")
 
         if (!data) {
@@ -87,7 +86,7 @@ const SignupScreen: React.FC = () => {
     return (
         <Fragment>
             <ParentBox>
-            <form onSubmit={handleSubmit(onSubmit)}>
+                <form onSubmit={handleSubmit(onSubmit)}>
                     <Heading variant="h2">
                         Signup Page </Heading>
 
@@ -149,7 +148,7 @@ const SignupScreen: React.FC = () => {
                             Invalid password
                         </ErrorMessage>
                     )}
-                    
+
                     <InputPassword
                         {...register("confirmPassword", { required: true })}
                         id="outlined-required"
@@ -157,7 +156,7 @@ const SignupScreen: React.FC = () => {
                         placeholder='Confirm Password'
                         error={errors.confirmPassword ? true : false}
                     />
-                     {errors.confirmPassword && errors.confirmPassword.type !== "manual" && (
+                    {errors.confirmPassword && errors.confirmPassword.type !== "manual" && (
                         <ErrorMessage variant="caption" color="error">
                             Password is required
                         </ErrorMessage>
@@ -167,7 +166,7 @@ const SignupScreen: React.FC = () => {
                             password not matched
                         </ErrorMessage>
                     )}
-                    
+
                     <_Button variant="contained" color="success" type="submit">
                         Signup
                     </_Button>
