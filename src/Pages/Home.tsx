@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { TodoList, ListedItem, DeleteEditButton, ParentBox, Heading } from '../Style/HomeStyle';
 import { deleteTodo, editTodo } from '../Store/Slices/todoSlice'
-import { RootState } from '../Redux Store/store';
+import { RootState } from '../store';
 import { Alert, ListItemSecondaryAction, ListItemText } from '@mui/material';
 import LogoutTodoButton from '../Component/LogoutTodoButton';
 import InputTextTodo from '../Component/InputTextTodo';

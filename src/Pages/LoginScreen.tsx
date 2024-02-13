@@ -34,15 +34,6 @@ const LoginScreen: React.FC = () => {
         event.preventDefault();
     };
 
-    const handleKeyPress = (event: React.KeyboardEvent<unknown>, nextInputRef: React.RefObject<HTMLInputElement>) => {
-        if (event.key === 'Enter') {
-            if (nextInputRef && nextInputRef.current) {
-                nextInputRef.current.focus();
-            }
-        }
-    };
-    const passwordInputRef = React.useRef<HTMLInputElement>(null);
-
     useEffect(() => {
         const loginData = localStorage.getItem("loggedInData");
         if (loginData) {
@@ -94,7 +85,6 @@ const LoginScreen: React.FC = () => {
                         type="email"
                         placeholder='Enter your Email'
                         error={errors.email ? true : false}
-                        onKeyPress={(e) => handleKeyPress(e, passwordInputRef)}
                     />
                     {errors.email && errors.email.type!=="manual" && (
                         <ErrorMessage variant="caption" color="error">
@@ -124,7 +114,6 @@ const LoginScreen: React.FC = () => {
                             </InputAdornment>
                         }
                         error={errors.password ? true : false}
-                        inputRef={passwordInputRef}
                     />
                     <ErrorMessage variant="caption" color="error">
                         {errors.password && "Password is required"}
