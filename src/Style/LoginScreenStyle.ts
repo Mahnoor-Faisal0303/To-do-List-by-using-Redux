@@ -9,9 +9,9 @@ import {
   Typography,
   styled,
 } from "@mui/material";
-import Done from "./assets/Done.svg";
+import Done from "../Assets/BG.svg";
 
-export const BoxStyle = styled(Box)({
+export const ParentBox = styled(Box)({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -28,17 +28,17 @@ export const BoxStyle = styled(Box)({
   height: "auto",
   backgroundColor: " rgba(244, 194, 127, 0.67);",
 });
-export const TypographyStyle = styled(Typography)({
+export const Heading = styled(Typography)({
   color: "#ab003c",
   fontFamily: "cursive",
   margin: "10px",
   marginTop: "130px",
 });
-export const LinkStyle = styled(Link)({
+export const SignupLink = styled(Link)({
   color: "#ab003c",
   fontFamily: "cursive",
 });
-export const TextFieldStyle = styled(TextField)({
+export const InputField = styled(TextField)({
   margin: "10px",
   padding: "0px",
   width: "80%",
@@ -46,7 +46,7 @@ export const TextFieldStyle = styled(TextField)({
   borderRadius: "5px",
   backgroundImage: "linear-gradient(white,#fad4e9)",
 });
-export const OutlinedInputStyle = styled(OutlinedInput)({
+export const InputPassword = styled(OutlinedInput)({
   margin: "10px",
   padding: "0px",
   width: "80%",
@@ -54,11 +54,11 @@ export const OutlinedInputStyle = styled(OutlinedInput)({
   borderRadius: "5px",
   backgroundImage: "linear-gradient(white,#fad4e9)",
 });
-export const IconButtonStyle = styled(IconButton)({
+export const PasswordIcon = styled(IconButton)({
   padding: "30px",
 });
-export const ButtonStyle = styled(Button)({
-  margin: "auto",
+export const _Button = styled(Button)({
+  margin: "10px",
   fontFamily: "cursive",
   fontSize: "25px",
   color: "white",
@@ -75,6 +75,10 @@ export const ButtonStyle = styled(Button)({
     backgroundImage: "linear-gradient(to right, yellow, #ef6c00)",
   },
 });
-export const AlertStyle = styled(Alert)({
+export const AlertMessage = styled(Alert)({
   margin: "10px",
 });
+export const ErrorMessage = styled(Typography)({
+  display:"flex",
+  justifyContent:"center",
+})

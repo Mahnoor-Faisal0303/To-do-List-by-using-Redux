@@ -1,5 +1,5 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { AlertStyle, BoxStyle, ButtonStyle, IconButtonStyle, LinkStyle, OutlinedInputStyle, TextFieldStyle, TypographyStyle } from '../LoginScreenStyle';
+import React, { Fragment, useEffect } from 'react';
+import { ParentBox, PasswordIcon, SignupLink, InputPassword, Heading, InputField, _Button, ErrorMessage } from '../Style/LoginScreenStyle';
 import { InputAdornment } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -9,14 +9,26 @@ import { useDispatch } from 'react-redux';
 import APP_ROUTES from '../Constant/Routes';
 import uuid from 'react-uuid';
 
+
+import { useForm, SubmitHandler } from "react-hook-form";
+
+interface IFormInput {
+    email: string
+    password: string
+}
+
 const LoginScreen: React.FC = () => {
+    const {
+        register,
+        formState: { errors },
+        handleSubmit,
+        setError,
+    } = useForm<IFormInput>()
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState<boolean>(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
-    const [showAlert, setShowAlert] = useState(false);
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
 
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
@@ -29,7 +41,6 @@ const LoginScreen: React.FC = () => {
             }
         }
     };
-
     const passwordInputRef = React.useRef<HTMLInputElement>(null);
 
     useEffect(() => {
@@ -37,9 +48,9 @@ const LoginScreen: React.FC = () => {
         if (loginData) {
             navigate(generatePath(APP_ROUTES.HOME_PAGE));
         }
-    },[navigate]);
+    }, [navigate]);
 
-    const loginFunction = () => {
+    const onSubmit: SubmitHandler<IFormInput> = ({ email, password }) => {
         const uservalid = {
             id: `${uuid()}`,
             email: `${email}`,
@@ -57,88 +68,78 @@ const LoginScreen: React.FC = () => {
 
             if (isUserValid) {
                 localStorage.setItem('loggedInData', JSON.stringify(userEnteredEmail));
-
                 console.log("email and password found");
                 dispatch(setCurrentUser(isUserValid));
                 navigate(generatePath(APP_ROUTES.HOME_PAGE));
             }
             else {
+                setError("email", { type: "manual", message: "Invalid email or password" });
                 console.log("not found");
-                setShowAlert(true);
-                setTimeout(function () {
-                    setShowAlert(false);
-                }, 2000);
             }
-        }
-        else{
-            setShowAlert(true);
-                setTimeout(function () {
-                    setShowAlert(false);
-                }, 2000);
         }
     }
 
-
-    // const isLoggedIn = useSelector((state: RootState) => state.logins.isLoggedIn);
-    // useEffect(() => {
-    //     if (isLoggedIn) {
-    //         navigate(generatePath(APP_ROUTES.HOME_PAGE))
-    //     }
-    // })
     return (
         <Fragment>
-            <BoxStyle>
-                <TypographyStyle variant="h3">Login /
-                    <LinkStyle href="#" underline="hover" onClick={() => navigate(generatePath(APP_ROUTES.SIGNUP_PAGE))}>
-                        {' SignUP'}
-                    </LinkStyle>
-                </TypographyStyle>
+            <ParentBox>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <Heading variant="h3">Login /
+                        <SignupLink href="#" underline="hover" onClick={() => navigate(generatePath(APP_ROUTES.SIGNUP_PAGE))}>
+                            {' SignUP'}
+                        </SignupLink>
+                    </Heading>
+                    <InputField
+                        {...register("email", { required: true })}
+                        id="outlined-required"
+                        type="email"
+                        placeholder='Enter your Email'
+                        error={errors.email ? true : false}
+                        onKeyPress={(e) => handleKeyPress(e, passwordInputRef)}
+                    />
+                    {errors.email && errors.email.type!=="manual" && (
+                        <ErrorMessage variant="caption" color="error">
+                            Email id is required
+                        </ErrorMessage>
+                    )}
+                    {errors.email && errors.email.type === "manual" && (
+                        <ErrorMessage variant="caption" color="error">
+                            Invalid email or password
+                        </ErrorMessage>
+                    )}
+                    <InputPassword
+                        {...register("password", { required: "required password" })}
+                        id="outlined-required"
+                        placeholder='Enter Password'
+                        type={showPassword ? 'text' : 'password'}
+                        endAdornment={
+                            <InputAdornment position="end">
+                                <PasswordIcon
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                </PasswordIcon>
+                            </InputAdornment>
+                        }
+                        error={errors.password ? true : false}
+                        inputRef={passwordInputRef}
+                    />
+                    <ErrorMessage variant="caption" color="error">
+                        {errors.password && "Password is required"}
+                    </ErrorMessage>
 
-                <TextFieldStyle
-                    required
-                    id="outlined-required"
-                    type="email"
-                    value={email}
-                    placeholder='Enter your Email'
-                    onChange={(e) => setEmail(e.target.value)}
-                    onKeyPress={(e) => handleKeyPress(e, passwordInputRef)}
-                />
-                <OutlinedInputStyle
-                    required
-                    id="outlined-required"
-                    placeholder='Enter Password'
-                    type={showPassword ? 'text' : 'password'}
-                    endAdornment={
-                        <InputAdornment position="end">
-                            <IconButtonStyle
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                            >
-                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButtonStyle>
-                        </InputAdornment>
-                    }
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    inputRef={passwordInputRef}
-                />
-
-                <ButtonStyle variant="contained" color="success" onClick={loginFunction} >
-                    Login
-                </ButtonStyle>
-
-                {showAlert && (
-                    <AlertStyle variant="filled" severity="info">
-                        Invalid Email or Password!
-                    </AlertStyle>
-                )}
-            </BoxStyle>
+                    <_Button variant="contained" color="success" type="submit">
+                        Login
+                    </_Button>
+                </form>
+            </ParentBox>
         </Fragment>
     );
 };
 
 export default LoginScreen;
+
 
 

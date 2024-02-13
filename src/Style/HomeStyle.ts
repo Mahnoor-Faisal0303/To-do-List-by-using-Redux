@@ -1,8 +1,9 @@
 import { Box, TextField, Typography, styled } from "@mui/material";
 import Button from "@mui/material/Button";
 import { List, ListItem } from "@mui/material";
-import Done from "./assets/Done.svg";
-export const BoxStyle = styled(Box)({
+import Done from "../Assets/BG.svg";
+
+export const ParentBox = styled(Box)({
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -20,13 +21,13 @@ export const BoxStyle = styled(Box)({
   width: "auto",
 });
 
-export const TypographyStyle = styled(Typography)({
+export const Heading = styled(Typography)({
   color: "#ab003c",
   fontFamily: "cursive",
   fontWeight: "bolder",
 });
 
-export const TextFieldStyle = styled(TextField)({
+export const InputText = styled(TextField)({
   margin: "10px",
   padding: "0px",
   width: "100%",
@@ -36,7 +37,7 @@ export const TextFieldStyle = styled(TextField)({
   backgroundImage: "linear-gradient(white,#fad4e9)",
 });
 
-export const ButtonStyle = styled(Button)({
+export const _Button = styled(Button)({
   marginRight: "auto",
   fontFamily: "cursive",
   fontSize: "25px",
@@ -56,11 +57,11 @@ export const ButtonStyle = styled(Button)({
     height: "45px",
   },
 });
-export const ListStyle = styled(List)({
+export const TodoList = styled(List)({
   display: "flex",
   flexDirection: "column",
 });
-export const ListItemStyle = styled(ListItem)({
+export const ListedItem = styled(ListItem)({
   display: "block",
   fontWeight: "bold",
   borderRadius: "20px",
@@ -72,7 +73,7 @@ export const ListItemStyle = styled(ListItem)({
 });
 
 
-export const DeleteEditButtonStyle = styled(Button)({
+export const DeleteEditButton = styled(Button)({
   fontFamily: "cursive",
   fontSize: "20px",
   color: "white",
@@ -88,7 +89,7 @@ export const DeleteEditButtonStyle = styled(Button)({
     backgroundImage: "linear-gradient(to right, yellow, #ef6c00)",
   },
 });
-export const LogoutButtonStyle = styled(Button)({
+export const LogoutButton = styled(Button)({
   fontFamily: "cursive",
   fontSize: "15px",
   color: "white",

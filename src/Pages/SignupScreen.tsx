@@ -1,9 +1,9 @@
 import React, { Fragment, useState } from 'react';
-import { Alert, InputAdornment } from '@mui/material';
+import { Alert, InputAdornment, Typography } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generatePath, useNavigate } from 'react-router-dom';
-import { AlertStyle, BoxStyle, ButtonStyle, IconButtonStyle, OutlinedInputStyle, TextFieldStyle, TypographyStyle } from '../LoginScreenStyle';
+import { AlertMessage, ParentBox, _Button, PasswordIcon, InputPassword, Heading, InputField} from '../Style/LoginScreenStyle';
 import uuid from 'react-uuid';
 import validator from 'validator';
 import PasswordValidator from 'password-validator';
@@ -11,7 +11,7 @@ import APP_ROUTES from '../Constant/Routes';
 
 const SignupScreen: React.FC = () => {
     const navigate = useNavigate();
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState<boolean>(false);
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -29,14 +29,14 @@ const SignupScreen: React.FC = () => {
     const EmailInputRef = React.useRef<HTMLInputElement>(null);
     const PasswordInputRef = React.useRef<HTMLInputElement>(null);
     const ConfirmPasswordInputRef = React.useRef<HTMLInputElement>(null);
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [showAlert, setShowAlert] = useState(false);
-    const [showNameAlert, setShowNameAlert] = useState(false);
-    const [showEmailError, setShowEmailError] = useState(false);
-    const [showCPasswordAlert, setShowCPassowrdAlert] = useState(false);
+    const [name, setName] = useState<string>("");
+    const [email, setEmail] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [confirmPassword, setConfirmPassword] = useState<string>("");
+    const [showAlert, setShowAlert] = useState<boolean>(false);
+    const [showNameAlert, setShowNameAlert] = useState<boolean>(false);
+    const [showEmailError, setShowEmailError] = useState<boolean>(false);
+    const [showCPasswordAlert, setShowCPassowrdAlert] = useState<boolean>(false);
 
     const passwordSchema = new PasswordValidator();
 
@@ -47,7 +47,61 @@ const SignupScreen: React.FC = () => {
         .has().lowercase()
         .symbols(0)
 
+        //const [showEmailError, setShowEmailError] = useState<boolean>(false);
+        const [showPasswordError, setShowPasswordError] = useState<boolean>(false);
+        const [showNameError , setShowNameError]= useState<boolean>(false);
     const onClickLogin = function onClickLoginFunc() {
+        if(name=="" && email=="" && password==""){
+            setShowNameError(true);
+            setShowEmailError(true);
+            setShowPasswordError(true);
+            return;
+         }
+        if(name && email=="" && password==""){
+            setShowNameError(false);
+            setShowEmailError(true);
+            setShowPasswordError(true);
+            return;
+        }
+        if(name && email && password==""){
+            setShowNameError(false);
+            setShowEmailError(false);
+            setShowPasswordError(true);
+            return;
+        }
+        if(password && name=="" && email==""){
+            setShowNameError(true);
+            setShowEmailError(true);
+            setShowPasswordError(false);
+            return;
+        }
+        if(name=="" && email && password==""){
+            setShowNameError(true);
+            setShowEmailError(false);
+            setShowPasswordError(true);
+            return;
+        }
+        if(name && email=="" && password){
+            setShowNameError(false);
+            setShowEmailError(true);
+            setShowPasswordError(false);
+            return;
+        }
+        if(name=="" && email && password){
+            setShowNameError(true);
+            setShowEmailError(false);
+            setShowPasswordError(false);
+            return;
+        }
+        if(name && email && password){
+            setShowNameError(false);
+            setShowEmailError(false);
+            setShowPasswordError(false);
+            return;
+        }
+
+
+
         if (!name || !email || !password) {
             setShowNameAlert(true);
             setTimeout(function () {
@@ -108,12 +162,11 @@ const SignupScreen: React.FC = () => {
         }
         navigate(generatePath(APP_ROUTES.LOGIN_PAGE));
     }
-
     return (
         <Fragment>
-            <BoxStyle>
-                <TypographyStyle variant="h2">
-                    Signup Page </TypographyStyle>
+            <ParentBox>
+                <Heading variant="h2">
+                    Signup Page </Heading>
                 {showNameAlert && (
                     <Alert>
                         Must fill all the Information!
@@ -132,15 +185,19 @@ const SignupScreen: React.FC = () => {
                     </Alert>
                 )}
 
-                <TextFieldStyle
+                <InputField
                     required
                     id="outlined-required"
                     type="text"
                     placeholder='Enter your Name'
                     onChange={(e) => setName(e.target.value)}
                     onKeyPress={(e) => handleKeyPress(e, EmailInputRef)}
+                    error={showNameError}
                 />
-                <TextFieldStyle
+                <Typography variant="caption" color="error">
+                    {showNameError ? 'required name' : ''}
+                </Typography>
+                <InputField
                     required
                     id="outlined-required"
                     type="email"
@@ -149,31 +206,37 @@ const SignupScreen: React.FC = () => {
                     inputRef={EmailInputRef}
                     onKeyPress={(e) => handleKeyPress(e, PasswordInputRef)}
                     error={showEmailError && !validator.isEmail(email)}
-                    helperText={showEmailError ? 'invalid format' : ''}
+                 //   helperText={showEmailError ? 'invalid format' : ''}
                 />
-                <OutlinedInputStyle
+                 <Typography variant="caption" color="error">
+                    {showEmailError ? 'required email' : ''}
+                </Typography>
+                <InputPassword
                     required
                     id="outlined-required"
                     type={showPassword ? 'text' : 'password'}
                     endAdornment={
                         <InputAdornment position="end">
-                            <IconButtonStyle
+                            <PasswordIcon
                                 aria-label="toggle password visibility"
                                 onClick={handleClickShowPassword}
                                 onMouseDown={handleMouseDownPassword}
                                 edge="end"
                             >
                                 {showPassword ? <VisibilityOff /> : <Visibility />}
-                            </IconButtonStyle>
+                            </PasswordIcon>
                         </InputAdornment>
                     }
                     placeholder='Enter Password'
                     onChange={(e) => setPassword(e.target.value)}
                     inputRef={PasswordInputRef}
                     onKeyPress={(e) => handleKeyPress(e, ConfirmPasswordInputRef)}
-                    error={showAlert && !passwordSchema.validate(password)}
+                    error={showAlert && !passwordSchema.validate(password)|| showPasswordError}
                 />
-                <OutlinedInputStyle
+                <Typography variant="caption" color="error">
+                    {showPasswordError ? 'required Password' : ''}
+                </Typography>
+                <InputPassword
                     required
                     id="outlined-required"
                     type={showPassword ? 'text' : 'password'}
@@ -183,16 +246,16 @@ const SignupScreen: React.FC = () => {
 
                 />
 
-                <ButtonStyle variant="contained" color="success" onClick={onClickLogin}>
+                <_Button variant="contained" color="success" onClick={onClickLogin}>
                     SignUp
-                </ButtonStyle>
+                </_Button>
 
                 {showAlert && (
-                    <AlertStyle variant="filled" severity="info">
+                    <AlertMessage variant="filled" severity="info">
                         Invalid Information!
-                    </AlertStyle>
+                    </AlertMessage>
                 )}
-            </BoxStyle>
+            </ParentBox>
         </Fragment>
     )
 }

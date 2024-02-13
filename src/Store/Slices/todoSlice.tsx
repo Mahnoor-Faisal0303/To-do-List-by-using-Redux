@@ -7,13 +7,14 @@ interface TodoState {
     editText: { id: string; name: string } | null;
 
 }
+const initialState: TodoState = {
+    todoList: [],
+    editText: null,
+};
 
 const todoSlice = createSlice({
     name: 'todos',
-    initialState: {
-        todoList: [],
-        editText: null,
-    },
+    initialState:initialState,
     reducers: {
         addTodo: (state: TodoState, action: PayloadAction<string>) => {
             state.todoList = [...state.todoList, { id: uuid(), name: action.payload }];
