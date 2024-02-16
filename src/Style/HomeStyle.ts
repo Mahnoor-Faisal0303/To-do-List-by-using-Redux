@@ -89,19 +89,3 @@ export const DeleteEditButton = styled(Button)({
     backgroundImage: "linear-gradient(to right, yellow, #ef6c00)",
   },
 });
-export const LogoutButton = styled(Button)({
-  fontFamily: "cursive",
-  fontSize: "15px",
-  color: "white",
-  height: "50px",
-  width: "auto",
-  fontWeight: "bold",
-  borderRadius: "50px",
-  backgroundImage: "linear-gradient(to right, #c62828, #ef6c00)",
-  padding: "10px",
-  transition: "background-color 0.3s ease",
-  margin:"7px",
-  "&:hover": {
-    backgroundImage: "linear-gradient(to right, yellow, #ef6c00)",
-  },
-});

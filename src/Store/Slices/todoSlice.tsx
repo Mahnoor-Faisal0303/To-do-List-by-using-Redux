@@ -3,13 +3,10 @@ import uuid from 'react-uuid';
 
 
 interface TodoState {
-    todoList: { id: string; name: string }[];
-    editText: { id: string; name: string } | null;
-
+    todoList: { id: string; name: string }[]  ;
 }
 const initialState: TodoState = {
     todoList: [],
-    editText: null,
 };
 
 const todoSlice = createSlice({
@@ -22,9 +19,6 @@ const todoSlice = createSlice({
         deleteTodo: (state: TodoState, action: PayloadAction<string>) => {
             state.todoList = state.todoList.filter((item) => item.id !== action.payload);
         },
-        editTodo: (state: TodoState, action: PayloadAction<{ id: string; name: string } | null>) => {
-            state.editText = action.payload;
-        },
         updateTodo: (state: TodoState, action: PayloadAction<{ id: string; newName: string }>) => {
             const { id, newName } = action.payload;
             state.todoList = state.todoList.map(todo => {
@@ -33,13 +27,12 @@ const todoSlice = createSlice({
                 }
                 return todo;
             });
-            state.editText = null;
         }
 
     },
 });
 
-export const { addTodo, deleteTodo, editTodo, updateTodo } = todoSlice.actions;
+export const { addTodo, deleteTodo, updateTodo } = todoSlice.actions;
 export default todoSlice.reducer;
 
 

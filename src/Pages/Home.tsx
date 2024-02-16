@@ -1,19 +1,17 @@
 import React, { useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TodoList, ListedItem, ParentBox, Heading, InputText, } from '../Style/HomeStyle';
-import { addTodo, deleteTodo, editTodo, updateTodo } from '../Store/Slices/todoSlice'
+import { TodoList, ListedItem, ParentBox, Heading, InputText } from '../Style/HomeStyle';
+import { addTodo, deleteTodo, updateTodo } from '../Store/Slices/todoSlice'
 import { RootState } from '../store';
 import { ListItemSecondaryAction, ListItemText } from '@mui/material';
-import LogoutTodoButton from '../Component/LogoutTodoButton';
-import AddButton from '../Component/AddButtonTodo';
-import UpdateButtonTodo from '../Component/UpdateButtonTodo';
+import PrimaryButton from '../Component/PrimaryButton';
 import { setLoggedOut } from '../Store/Slices/loginSlice';
 import { generatePath, useNavigate } from 'react-router-dom';
 import APP_ROUTES from '../Constant/Routes';
-import DeleteButton from '../Component/DeleteButton';
-import EditButton from '../Component/EditButton';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ErrorMessage } from '../Style/LoginScreenStyle';
+import SecondaryButton from '../Component/SecondaryButton';
+import useEditHook from '../Hooks/EditCustomHook';
 
 interface IFormInput {
   text: string
@@ -38,18 +36,8 @@ const Home: React.FC = () => {
     dispatch(deleteTodo(id));
   };
 
-  const [newId, setNewId] = useState<string>("");
+  const {editedId, handleEditButtonClick} = useEditHook({setShowUpdateButton,setShowAddButton,todoList,setTodoText})
 
-  const handleEditButtonClick = (id: string) => {
-    setShowUpdateButton(true);
-    setShowAddButton(false);
-    const editedItem = todoList.find((item) => item.id === id);
-    if (editedItem) {
-      setTodoText(editedItem.name);
-      dispatch(editTodo(editedItem));
-    }
-    setNewId(id);
-  }
   const handleUpdateButtonClick = () => {
     if (todoText.trim() === '') {
       setError("text", { type: "manual", message: "Please write something" });
@@ -57,7 +45,15 @@ const Home: React.FC = () => {
     }
     setShowUpdateButton(false);
     setShowAddButton(true);
-    dispatch(updateTodo({ id: newId, newName: todoText }));
+    dispatch(updateTodo({ id: editedId, newName: todoText }));
+    setTodoText('');
+  }
+  const handleAddButtonClick = () => {
+    if (todoText.trim() === '') {
+      setError("text", { type: "manual", message: "Please write something" });
+      return;
+    }
+    dispatch(addTodo(todoText));
     setTodoText('');
   }
 
@@ -69,9 +65,6 @@ const Home: React.FC = () => {
   const onSubmit: SubmitHandler<IFormInput> = ({ text }) => {
     if (text.trim() === '') {
       return;
-    } else {
-      dispatch(addTodo(text));
-      setTodoText('');
     }
   }
 
@@ -95,26 +88,26 @@ const Home: React.FC = () => {
             {errors.text && "Please Write Something"}
           </ErrorMessage>
 
-          {showAddButton && (
-            <AddButton type="submit" />
+           {showAddButton && (
+            <PrimaryButton type='submit' onClick={handleAddButtonClick} title="Add"/>
           )}
 
           {showUpdateButton && (
-            <UpdateButtonTodo onClick={handleUpdateButtonClick} />)}
+            <PrimaryButton type='submit' onClick={handleUpdateButtonClick} title="Update" />)}
 
           <TodoList>
             {todoList.map((item: { id: string; name: string; }) => (
               <ListedItem key={item.id} >
                 <ListItemText key={item.id} primary={item.name} />
                 <ListItemSecondaryAction>
-                  <DeleteButton onClick={() => handleDeleteButtonClick(item.id)} />
-                  <EditButton onClick={() => handleEditButtonClick(item.id)} />
+                  <SecondaryButton onClick={() => handleDeleteButtonClick(item.id)} title="Delete"/>
+                  <SecondaryButton onClick={() => handleEditButtonClick(item.id)} title="Edit"/>
                 </ListItemSecondaryAction>
               </ListedItem>
             ))}
-
           </TodoList>
-          <LogoutTodoButton onClick={handleLogoutButtonClick} />
+
+          <PrimaryButton onClick={handleLogoutButtonClick} title="Logout" />
         </form>
       </ParentBox>
     </Fragment >
