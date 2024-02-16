@@ -1,25 +1,43 @@
 import React, { useState, Fragment } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { TodoList, ListedItem, DeleteEditButton, ParentBox, Heading } from '../Style/HomeStyle';
-import { deleteTodo, editTodo } from '../Store/Slices/todoSlice'
+import { TodoList, ListedItem, ParentBox, Heading, InputText, } from '../Style/HomeStyle';
+import { addTodo, deleteTodo, editTodo, updateTodo } from '../Store/Slices/todoSlice'
 import { RootState } from '../store';
-import { Alert, ListItemSecondaryAction, ListItemText } from '@mui/material';
+import { ListItemSecondaryAction, ListItemText } from '@mui/material';
 import LogoutTodoButton from '../Component/LogoutTodoButton';
-import InputTextTodo from '../Component/InputTextTodo';
-import AddButtonTodo from '../Component/AddButtonTodo';
+import AddButton from '../Component/AddButtonTodo';
 import UpdateButtonTodo from '../Component/UpdateButtonTodo';
+import { setLoggedOut } from '../Store/Slices/loginSlice';
+import { generatePath, useNavigate } from 'react-router-dom';
+import APP_ROUTES from '../Constant/Routes';
+import DeleteButton from '../Component/DeleteButton';
+import EditButton from '../Component/EditButton';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ErrorMessage } from '../Style/LoginScreenStyle';
+
+interface IFormInput {
+  text: string
+}
 
 const Home: React.FC = () => {
+  const {
+    register,
+    formState: { errors },
+    handleSubmit,
+    setError,
+  } = useForm<IFormInput>()
+
   const [todoText, setTodoText] = useState<string>('');
-  const [showAlert, setShowAlert] = useState<boolean>(false);
   const [showUpdateButton, setShowUpdateButton] = useState<boolean>(false);
   const [showAddButton, setShowAddButton] = useState<boolean>(true);
   const dispatch = useDispatch();
   const todoList = useSelector((state: RootState) => state.todos.todoList);
+  const navigate = useNavigate();
 
   const handleDeleteButtonClick = (id: string) => {
     dispatch(deleteTodo(id));
   };
+
   const [newId, setNewId] = useState<string>("");
 
   const handleEditButtonClick = (id: string) => {
@@ -32,51 +50,72 @@ const Home: React.FC = () => {
     }
     setNewId(id);
   }
+  const handleUpdateButtonClick = () => {
+    if (todoText.trim() === '') {
+      setError("text", { type: "manual", message: "Please write something" });
+      return;
+    }
+    setShowUpdateButton(false);
+    setShowAddButton(true);
+    dispatch(updateTodo({ id: newId, newName: todoText }));
+    setTodoText('');
+  }
+
+  const handleLogoutButtonClick = () => {
+    dispatch(setLoggedOut());
+    navigate(generatePath(APP_ROUTES.LOGIN_PAGE));
+  };
+
+  const onSubmit: SubmitHandler<IFormInput> = ({ text }) => {
+    if (text.trim() === '') {
+      return;
+    } else {
+      dispatch(addTodo(text));
+      setTodoText('');
+    }
+  }
 
   return (
     <Fragment>
       <ParentBox>
-        <Heading variant="h2">Todo List</Heading>
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Heading variant="h2">Todo List</Heading>
+          <InputText
+            InputProps={{
+              style: { fontSize: 30, fontWeight: 'bold', color: 'brown', fontFamily: "cursive" }
+            }}
+            {...register("text", { required: true })}
+            type="text"
+            value={todoText}
+            onChange={(e) => setTodoText(e.target.value)}
+            error={errors.text ? true : false}
 
-        <InputTextTodo todoText={todoText} setTodoText={setTodoText} />
-
-        {showAddButton && (
-          <AddButtonTodo todoText={todoText} setShowAlert={setShowAlert} setTodoText={setTodoText} />
-        )}
-
-        {showUpdateButton && (
-          <UpdateButtonTodo
-            todoText={todoText}
-            setShowAlert={setShowAlert}
-            setTodoText={setTodoText}
-            setShowUpdateButton={setShowUpdateButton}
-            setShowAddButton={setShowAddButton}
-            dispatch={dispatch}
-            newId={newId}
           />
-        )}
+          <ErrorMessage variant="caption" color="error">
+            {errors.text && "Please Write Something"}
+          </ErrorMessage>
 
-        <TodoList>
-          {todoList.map((item: { id: string; name: string; }) => (
-            <ListedItem key={item.id} >
-              <ListItemText key={item.id} primary={item.name} />
-              <ListItemSecondaryAction>
-                <DeleteEditButton onClick={() => handleDeleteButtonClick(item.id)}>Delete</DeleteEditButton>
-                <DeleteEditButton onClick={() => handleEditButtonClick(item.id)}>Edit</DeleteEditButton>
-              </ListItemSecondaryAction>
-            </ListedItem>
-          ))}
+          {showAddButton && (
+            <AddButton type="submit" />
+          )}
 
-        </TodoList>
+          {showUpdateButton && (
+            <UpdateButtonTodo onClick={handleUpdateButtonClick} />)}
 
-        {
-          showAlert && (
-            <Alert variant="filled" severity="info">
-              Please write something!
-            </Alert>
-          )
-        }
-        <LogoutTodoButton />
+          <TodoList>
+            {todoList.map((item: { id: string; name: string; }) => (
+              <ListedItem key={item.id} >
+                <ListItemText key={item.id} primary={item.name} />
+                <ListItemSecondaryAction>
+                  <DeleteButton onClick={() => handleDeleteButtonClick(item.id)} />
+                  <EditButton onClick={() => handleEditButtonClick(item.id)} />
+                </ListItemSecondaryAction>
+              </ListedItem>
+            ))}
+
+          </TodoList>
+          <LogoutTodoButton onClick={handleLogoutButtonClick} />
+        </form>
       </ParentBox>
     </Fragment >
 

@@ -14,7 +14,7 @@ const initialState: TodoState = {
 
 const todoSlice = createSlice({
     name: 'todos',
-    initialState:initialState,
+    initialState: initialState,
     reducers: {
         addTodo: (state: TodoState, action: PayloadAction<string>) => {
             state.todoList = [...state.todoList, { id: uuid(), name: action.payload }];

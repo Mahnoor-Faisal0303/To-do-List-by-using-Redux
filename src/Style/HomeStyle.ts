@@ -30,7 +30,7 @@ export const Heading = styled(Typography)({
 export const InputText = styled(TextField)({
   margin: "10px",
   padding: "0px",
-  width: "100%",
+  width: "530px",
   height: "auto",
   border: "none",
   borderRadius: "5px",
@@ -38,7 +38,7 @@ export const InputText = styled(TextField)({
 });
 
 export const _Button = styled(Button)({
-  marginRight: "auto",
+  marginRight: "400px",
   fontFamily: "cursive",
   fontSize: "25px",
   color: "white",

@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './Pages/Home';
-import SignupScreen from './Pages/SignupScreen';
 import LoginScreen from './Pages/LoginScreen';
 import APP_ROUTES from './Constant/Routes';
 
@@ -9,8 +8,7 @@ function App() {
     <Router>
       <Routes>
         <Route path={APP_ROUTES.LOGIN_PAGE} element={<LoginScreen />} />
-        <Route path={APP_ROUTES.HOME_PAGE} element={<Home/> } />
-        <Route path={APP_ROUTES.SIGNUP_PAGE} element={<SignupScreen />} />
+        <Route path={APP_ROUTES.HOME_PAGE} element={<Home />} />
       </Routes>
     </Router>
   );

@@ -1,39 +1,11 @@
-import { updateTodo } from "../Store/Slices/todoSlice";
 import { _Button } from "../Style/HomeStyle";
-import { Dispatch } from 'redux';
 
 interface updateButtonTodoProps {
-    todoText: string;
-    setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
-    setTodoText: React.Dispatch<React.SetStateAction<string>>;
-    setShowUpdateButton: React.Dispatch<React.SetStateAction<boolean>>;
-    setShowAddButton: React.Dispatch<React.SetStateAction<boolean>>;
-    dispatch: Dispatch;
-    newId: string;
+    onClick: () => void;
 }
-const updateButtonTodo: React.FC<updateButtonTodoProps> = ({
-    todoText,
-    setShowAlert,
-    setTodoText,
-    setShowUpdateButton,
-    setShowAddButton,
-    dispatch,
-    newId
-}) => {
-
-    const handleUpdateButtonClick = () => {
-        if (todoText.trim() === '') {
-            setShowAlert(true);
-            return;
-        }
-        setShowUpdateButton(false);
-        setShowAddButton(true);
-        setShowAlert(false);
-        dispatch(updateTodo({ id: newId, newName: todoText }));
-        setTodoText('');
-    }
+const updateButtonTodo: React.FC<updateButtonTodoProps> = ({onClick}) => {
     return (
-        <_Button onClick={() => handleUpdateButtonClick()}>Update</_Button>
+        <_Button onClick={onClick}>Update</_Button>
     )
 }
 export default updateButtonTodo;
