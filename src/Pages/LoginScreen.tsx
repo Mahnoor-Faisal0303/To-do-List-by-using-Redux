@@ -9,7 +9,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import APP_ROUTES from '../Constant/Routes';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { RootState } from '../store';
-import PasswordValidator from 'password-validator';
+import { z } from "zod";
+import { Controller } from "react-hook-form"
+
 
 interface IFormInput {
     email: string
@@ -18,7 +20,7 @@ interface IFormInput {
 
 const LoginScreen: React.FC = () => {
     const {
-        register,
+        control,
         formState: { errors },
         handleSubmit,
         setError,
@@ -40,20 +42,20 @@ const LoginScreen: React.FC = () => {
         }
     }, [auth.isLoggedIn, navigate]);
 
-    const passwordSchema = new PasswordValidator();
-
-    passwordSchema
-        .is().min(8)
-        .has().digits(1)
-        .has().uppercase()
-        .has().lowercase()
-        .symbols(0)
+    const passwordSchema = z.string()
+        .min(8, "Password must be at least 8 characters long")
+        .max(20, "Password must not exceed 20 characters")
+        .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9]).{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one symbol");
 
     const onSubmit: SubmitHandler<IFormInput> = ({ email, password }) => {
-        if (!passwordSchema.validate(password)) {
-            setError("password", { type: "manual", message: "Invalid password" });
-        } else {
+        try {
+            passwordSchema.parse(password);
             dispatch(setCurrentUser({ email, password }))
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const message = error.errors.map(err => err.message).join("\n");
+                setError("password", { type: "manual", message: message });
+            }
         }
     }
 
@@ -63,61 +65,78 @@ const LoginScreen: React.FC = () => {
                 <form onSubmit={handleSubmit(onSubmit)}>
                     <Heading variant="h3">Login
                     </Heading>
-                    <InputField
-                        {...register("email", { required: true })}
-                        id="outlined-required"
-                        type="email"
-                        placeholder='Enter your Email'
-                        error={errors.email ? true : false}
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: "Email is required",
+                            pattern: {
+                                value: /^\S+@\S+$/i,
+                                message: "Invalid email format",
+                            },
+                        }}
+                        name="email"
+                        render={({ field }) => (
+                            <InputField
+                                {...field}
+                                id="outlined-required"
+                                type="email"
+                                placeholder='Enter your Email'
+                                error={errors.email ? true : false}
+                            />
+                        )}
                     />
-                    {errors.email && errors.email.type !== "manual" && (
+                    {errors.email && errors.email.type === "pattern" && (
                         <ErrorMessage variant="caption" color="error">
-                            Email id is required
+                            {errors.email.message}
                         </ErrorMessage>
                     )}
-                    {errors.email && errors.email.type === "manual" && (
+                    {errors.email && errors.email.type !== "pattern" && (
                         <ErrorMessage variant="caption" color="error">
-                            Invalid email or password
+                            {errors.email.message}
                         </ErrorMessage>
                     )}
-                    <InputPassword
-                        {...register("password", { required: "required password" })}
-                        id="outlined-required"
-                        placeholder='Enter Password'
-                        type={showPassword ? 'text' : 'password'}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <PasswordIcon
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </PasswordIcon>
-                            </InputAdornment>
-                        }
-                        error={errors.password ? true : false}
+
+                    <Controller
+                        control={control}
+                        rules={{
+                            required: "Password is required",
+                        }}
+                        name="password"
+                        render={({ field }) => (
+                            <InputPassword
+                                {...field}
+                                id="outlined-required"
+                                placeholder='Enter Password'
+                                type={showPassword ? 'text' : 'password'}
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <PasswordIcon
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </PasswordIcon>
+                                    </InputAdornment>
+                                }
+                                error={errors.password ? true : false}
+                            />
+                        )}
                     />
-                    {errors.password && errors.password.type !== "manual" && (
-                        <ErrorMessage variant="caption" color="error">
-                            Password is required
-                        </ErrorMessage>
-                    )}
-                    {errors.password && errors.password.type === "manual" && (
-                        <ErrorMessage variant="caption" color="error">
-                            Invalid password
-                        </ErrorMessage>
-                    )}
+                    <ErrorMessage variant="caption" color="error">
+                        {errors.password?.message}
+                    </ErrorMessage>
 
                     <_Button variant="contained" color="success" type="submit">
                         Login
                     </_Button>
                 </form>
             </ParentBox>
-        </Fragment>
+        </Fragment >
     );
 };
 
 export default LoginScreen;
+
 

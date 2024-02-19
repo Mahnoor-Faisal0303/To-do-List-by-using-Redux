@@ -56,7 +56,7 @@ const Home: React.FC = () => {
     dispatch(addTodo(todoText));
     setTodoText('');
   }
-
+  
   const handleLogoutButtonClick = () => {
     dispatch(setLoggedOut());
     navigate(generatePath(APP_ROUTES.LOGIN_PAGE));
