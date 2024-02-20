@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
 import { ParentBox, PasswordIcon, InputPassword, Heading, InputField, Buttons, ErrorMessage } from '../Style/LoginScreenStyle';
-import { InputAdornment } from '@mui/material';
+import { Input, InputAdornment } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { generatePath, useNavigate } from 'react-router-dom';
@@ -11,7 +11,6 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { RootState } from '../store';
 import { z } from "zod";
 import { Controller } from "react-hook-form"
-
 
 interface IFormInput {
     email: string
@@ -45,7 +44,7 @@ const LoginScreen: React.FC = () => {
     const passwordSchema = z.string({
         required_error: "Password is required",
       }) 
-      .nonempty("Password is required")
+      //.nonempty("Password is required")
       .min(8, "Password must be at least 8 characters long")
       .max(20, "Password must not exceed 20 characters")
       .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9]).{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one symbol");
@@ -53,7 +52,7 @@ const LoginScreen: React.FC = () => {
         const emailSchema = z.string({
             required_error: "Email is required",
           })
-          .nonempty("Email is required")
+          //.nonempty("Email is required")
             //.regex(/^\S+@\S+$/i, "Invalid email format");
     
 
@@ -89,13 +88,9 @@ const LoginScreen: React.FC = () => {
                     </Heading>
                     <Controller
                         control={control}
-                        // rules={{
-                        //     required: "Email is required",
-                        //     pattern: {
-                        //         value: /^\S+@\S+$/i,
-                        //         message: "Invalid email format",
-                        //     },
-                        // }}
+                        rules={{
+                            required: "Email is required",
+                         }}
                         name="email"
                         render={({ field }) => (
                             <InputField
@@ -110,22 +105,12 @@ const LoginScreen: React.FC = () => {
                     <ErrorMessage variant="caption" color="error">
                         {errors.email?.message}
                     </ErrorMessage>
-                    {/* {errors.email && errors.email.type === "pattern" && (
-                        <ErrorMessage variant="caption" color="error">
-                            {errors.email.message}
-                        </ErrorMessage>
-                    )}
-                    {errors.email && errors.email.type !== "pattern" && (
-                        <ErrorMessage variant="caption" color="error">
-                            {errors.email.message}
-                        </ErrorMessage>
-                    )} */}
 
                     <Controller
                         control={control}
-                        // rules={{
-                        //     required: "Password is required",
-                        // }}
+                        rules={{
+                            required: "Password is required",
+                        }}
                         name="password"
                         render={({ field }) => (
                             <InputPassword
@@ -146,7 +131,7 @@ const LoginScreen: React.FC = () => {
                                     </InputAdornment>
                                 }
                                 error={errors.password ? true : false}
-                            />
+                            />    
                         )}
                     />
                     <ErrorMessage variant="caption" color="error">
