@@ -57,7 +57,7 @@ export const InputPassword = styled(OutlinedInput)({
 export const PasswordIcon = styled(IconButton)({
   padding: "30px",
 });
-export const _Button = styled(Button)({
+export const Buttons = styled(Button)({
   margin: "10px",
   fontFamily: "cursive",
   fontSize: "25px",

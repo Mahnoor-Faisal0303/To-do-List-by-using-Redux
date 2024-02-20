@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect } from 'react';
-import { ParentBox, PasswordIcon, InputPassword, Heading, InputField, _Button, ErrorMessage } from '../Style/LoginScreenStyle';
+import { ParentBox, PasswordIcon, InputPassword, Heading, InputField, Buttons, ErrorMessage } from '../Style/LoginScreenStyle';
 import { InputAdornment } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -42,20 +42,42 @@ const LoginScreen: React.FC = () => {
         }
     }, [auth.isLoggedIn, navigate]);
 
-    const passwordSchema = z.string()
-        .min(8, "Password must be at least 8 characters long")
-        .max(20, "Password must not exceed 20 characters")
-        .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9]).{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one symbol");
+    const passwordSchema = z.string({
+        required_error: "Password is required",
+      }) 
+      .nonempty("Password is required")
+      .min(8, "Password must be at least 8 characters long")
+      .max(20, "Password must not exceed 20 characters")
+      .regex(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^a-zA-Z0-9]).{8,}$/, "Password must contain at least one uppercase letter, one lowercase letter, one digit, and one symbol");
+       
+        const emailSchema = z.string({
+            required_error: "Email is required",
+          })
+          .nonempty("Email is required")
+            //.regex(/^\S+@\S+$/i, "Invalid email format");
+    
 
     const onSubmit: SubmitHandler<IFormInput> = ({ email, password }) => {
         try {
             passwordSchema.parse(password);
-            dispatch(setCurrentUser({ email, password }))
+           // dispatch(setCurrentUser({ email, password }))
         } catch (error) {
             if (error instanceof z.ZodError) {
                 const message = error.errors.map(err => err.message).join("\n");
                 setError("password", { type: "manual", message: message });
             }
+        }
+        try {  
+            emailSchema.parse(email);
+            //dispatch(setCurrentUser({ email, password }))
+        } catch (error) {
+            if (error instanceof z.ZodError) {
+                const message = error.errors.map(err => err.message).join("\n");
+                setError("email", { type: "manual", message: message });
+            }
+        }
+        if(passwordSchema.parse(password) && emailSchema.parse(email) ){
+            dispatch(setCurrentUser({ email, password }))
         }
     }
 
@@ -67,13 +89,13 @@ const LoginScreen: React.FC = () => {
                     </Heading>
                     <Controller
                         control={control}
-                        rules={{
-                            required: "Email is required",
-                            pattern: {
-                                value: /^\S+@\S+$/i,
-                                message: "Invalid email format",
-                            },
-                        }}
+                        // rules={{
+                        //     required: "Email is required",
+                        //     pattern: {
+                        //         value: /^\S+@\S+$/i,
+                        //         message: "Invalid email format",
+                        //     },
+                        // }}
                         name="email"
                         render={({ field }) => (
                             <InputField
@@ -85,7 +107,10 @@ const LoginScreen: React.FC = () => {
                             />
                         )}
                     />
-                    {errors.email && errors.email.type === "pattern" && (
+                    <ErrorMessage variant="caption" color="error">
+                        {errors.email?.message}
+                    </ErrorMessage>
+                    {/* {errors.email && errors.email.type === "pattern" && (
                         <ErrorMessage variant="caption" color="error">
                             {errors.email.message}
                         </ErrorMessage>
@@ -94,13 +119,13 @@ const LoginScreen: React.FC = () => {
                         <ErrorMessage variant="caption" color="error">
                             {errors.email.message}
                         </ErrorMessage>
-                    )}
+                    )} */}
 
                     <Controller
                         control={control}
-                        rules={{
-                            required: "Password is required",
-                        }}
+                        // rules={{
+                        //     required: "Password is required",
+                        // }}
                         name="password"
                         render={({ field }) => (
                             <InputPassword
@@ -128,9 +153,9 @@ const LoginScreen: React.FC = () => {
                         {errors.password?.message}
                     </ErrorMessage>
 
-                    <_Button variant="contained" color="success" type="submit">
+                    <Buttons variant="contained" color="success" type="submit">
                         Login
-                    </_Button>
+                    </Buttons>
                 </form>
             </ParentBox>
         </Fragment >
