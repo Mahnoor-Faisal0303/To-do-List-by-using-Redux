@@ -82,7 +82,6 @@ const Home: React.FC = () => {
             value={todoText}
             onChange={(e) => setTodoText(e.target.value)}
             error={errors.text ? true : false}
-
           />
           <ErrorMessage variant="caption" color="error">
             {errors.text && "Please Write Something"}
