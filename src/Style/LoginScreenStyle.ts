@@ -5,7 +5,6 @@ import {
   IconButton,
   Link,
   OutlinedInput,
-  TextField,
   Typography,
   styled,
 } from "@mui/material";
@@ -38,15 +37,7 @@ export const SignupLink = styled(Link)({
   color: "#ab003c",
   fontFamily: "cursive",
 });
-export const InputField = styled(TextField)({
-  margin: "10px",
-  padding: "0px",
-  width: "80%",
-  border: "none",
-  borderRadius: "5px",
-  backgroundImage: "linear-gradient(white,#fad4e9)",
-});
-export const InputPassword = styled(OutlinedInput)({
+export const InputField = styled(OutlinedInput)({
   margin: "10px",
   padding: "0px",
   width: "80%",
@@ -57,7 +48,7 @@ export const InputPassword = styled(OutlinedInput)({
 export const PasswordIcon = styled(IconButton)({
   padding: "30px",
 });
-export const _Button = styled(Button)({
+export const Buttons = styled(Button)({
   margin: "10px",
   fontFamily: "cursive",
   fontSize: "25px",
